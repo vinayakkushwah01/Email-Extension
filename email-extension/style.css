@@ -72,3 +72,9 @@ ul#subjects li:hover {
   font-weight: bold;
   display: none;
 }
+/* In style.css */
+.error-box {
+  font-size: 0.9em;
+  margin-top: 5px;
+  color: #ff4444;
+}

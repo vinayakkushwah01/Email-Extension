@@ -179,12 +179,17 @@ public class EmailService {
             if (summaries.size() >= 20) break;
 
             // Check for Gmail's "CATEGORY_PERSONAL" label (i.e., Primary tab)
-            String[] labels = msg.getHeader("X-GM-LABELS");
-            if (labels != null && Arrays.stream(labels).anyMatch(label -> label.contains("CATEGORY_PERSONAL"))) {
-                String msgDate = new SimpleDateFormat("yyyy-MM-dd").format(msg.getSentDate());
-                if (msgDate.equals(today)) {
-                    summaries.add(new EmailSummary(msg.getSubject(), msgDate));
-                }
+            // String[] labels = msg.getHeader("X-GM-LABELS");
+            // if (labels != null && Arrays.stream(labels).anyMatch(label -> label.contains("CATEGORY_PERSONAL"))) {
+            //     String msgDate = new SimpleDateFormat("yyyy-MM-dd").format(msg.getSentDate());
+            //     if (msgDate.equals(today)) {
+            //         summaries.add(new EmailSummary(msg.getSubject(), msgDate));
+            //     }
+            // }
+
+            String msgDate = new SimpleDateFormat("yyyy-MM-dd").format(msg.getSentDate());
+            if (msgDate.equals(today)) {
+                summaries.add(new EmailSummary(msg.getSubject(), msgDate));
             }
         }
 
@@ -220,8 +225,8 @@ public class EmailService {
 
         for (Message msg : messages) {
             if (msg.getSubject() != null && msg.getSubject().equalsIgnoreCase(subjectToMatch)) {
-                String[] labels = msg.getHeader("X-GM-LABELS");
-                if (labels != null && Arrays.stream(labels).anyMatch(label -> label.contains("CATEGORY_PERSONAL"))) {
+               // String[] labels = msg.getHeader("X-GM-LABELS");
+               // if (labels != null && Arrays.stream(labels).anyMatch(label -> label.contains("CATEGORY_PERSONAL"))) {
                     Object content = msg.getContent();
                     if (content instanceof String str) {
                         return str;
@@ -233,7 +238,7 @@ public class EmailService {
                         }
                         return sb.toString();
                     }
-                }
+                //}
             }
         }
 
