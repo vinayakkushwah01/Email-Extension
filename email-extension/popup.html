@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Reader</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1> Email Reader</h1>
+    
+    <div id="loginSection" class="card">
+      <input type="email" id="email" placeholder="Your Gmail">
+      <input type="password" id="password" placeholder="App Password">
+      <button id="loginBtn">Login</button>
+    </div>
+
+    <div id="mainSection" class="card hidden">
+      <button id="fetchBtn">🔄 Fetch Unread</button>
+      <ul id="subjects"></ul>
+      <div id="emailBody" class="body-box"></div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

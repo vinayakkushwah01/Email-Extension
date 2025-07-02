@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Email Reader Assistant",
+  "description": "Read Gmail unread messages by voice and text.",
+  "version": "1.0",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "host_permissions": ["http://localhost:8080/*"]
+}
