@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Email Reader</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1> Email Reader</h1>
-    
-    <div id="loginSection" class="card">
-      <input type="email" id="email" placeholder="Your Gmail">
-      <input type="password" id="password" placeholder="App Password">
+  <div id="app">
+    <div id="loginForm">
+      <h2>🔐 Login</h2>
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="App Password" />
       <button id="loginBtn">Login</button>
     </div>
 
-    <div id="mainSection" class="card hidden">
-      <button id="fetchBtn">🔄 Fetch Unread</button>
+    <div id="emailList" class="hidden">
+      <h2>📩 Today's Unread Emails</h2>
       <ul id="subjects"></ul>
-      <div id="emailBody" class="body-box"></div>
+      <div class="controls">
+        <button id="logoutBtn">🔓 Logout</button>
+      </div>
+    </div>
+
+    <div id="emailView" class="hidden">
+      <h3 id="emailSubject"></h3>
+      <p id="emailBody"></p>
+      <div class="controls">
+        <button id="speakBtn">🔊 Speak</button>
+        <button id="pauseBtn">⏸️ Pause</button>
+        <button id="resumeBtn">▶️ Resume</button>
+        <button id="stopBtn">⏹️ Stop</button>
+        <button id="backBtn">🔙 Back</button>
+      </div>
     </div>
   </div>
   <script src="popup.js"></script>

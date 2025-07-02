@@ -1,77 +1,93 @@
 const emailInput = document.getElementById("email");
 const passInput = document.getElementById("password");
 const loginBtn = document.getElementById("loginBtn");
-const fetchBtn = document.getElementById("fetchBtn");
-const subjectList = document.getElementById("subjects");
+const logoutBtn = document.getElementById("logoutBtn");
+const subjectsUl = document.getElementById("subjects");
 const emailBody = document.getElementById("emailBody");
-const loginSection = document.getElementById("loginSection");
-const mainSection = document.getElementById("mainSection");
+const emailSubject = document.getElementById("emailSubject");
+const speakBtn = document.getElementById("speakBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const resumeBtn = document.getElementById("resumeBtn");
+const stopBtn = document.getElementById("stopBtn");
+const backBtn = document.getElementById("backBtn");
 
-window.addEventListener("DOMContentLoaded", () => {
-  const email = sessionStorage.getItem("email");
-  const pass = sessionStorage.getItem("appPassword");
+const loginForm = document.getElementById("loginForm");
+const emailList = document.getElementById("emailList");
+const emailView = document.getElementById("emailView");
 
-  if (email && pass) {
-    loginSection.classList.add("hidden");
-    mainSection.classList.remove("hidden");
-    fetchEmails(email, pass);
+let utterance;
+
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = JSON.parse(localStorage.getItem("creds"));
+  if (saved) {
+    fetchSubjects(saved.email, saved.encryptedPass);
+    loginForm.classList.add("hidden");
+    emailList.classList.remove("hidden");
   }
 });
 
-loginBtn.addEventListener("click", () => {
+loginBtn.onclick = async () => {
   const email = emailInput.value;
   const pass = passInput.value;
+  if (!email || !pass) return alert("Enter email and password");
 
-  if (!email || !pass) return alert("Please enter both fields.");
+  const encryptedRes = await fetch(`http://localhost:8080/api/auth/encrypt-password?value=${encodeURIComponent(pass)}`);
+  const encryptedPass = await encryptedRes.text();
 
-  sessionStorage.setItem("email", email);
-  sessionStorage.setItem("appPassword", pass);
+  localStorage.setItem("creds", JSON.stringify({ email, encryptedPass }));
+  fetchSubjects(email, encryptedPass);
 
-  loginSection.classList.add("hidden");
-  mainSection.classList.remove("hidden");
+  loginForm.classList.add("hidden");
+  emailList.classList.remove("hidden");
+};
 
-  fetchEmails(email, pass);
-});
+logoutBtn.onclick = () => {
+  localStorage.removeItem("creds");
+  emailList.classList.add("hidden");
+  loginForm.classList.remove("hidden");
+};
 
-fetchBtn.addEventListener("click", () => {
-  const email = sessionStorage.getItem("email");
-  const pass = sessionStorage.getItem("appPassword");
-  fetchEmails(email, pass);
-});
+backBtn.onclick = () => {
+  emailView.classList.add("hidden");
+  emailList.classList.remove("hidden");
+  stopSpeech();
+};
 
-async function fetchEmails(email, pass) {
-  subjectList.innerHTML = "";
-  emailBody.innerHTML = "";
+speakBtn.onclick = () => {
+  const text = emailBody.textContent;
+  if (!text) return;
+  utterance = new SpeechSynthesisUtterance(text);
+  speechSynthesis.speak(utterance);
+};
 
-  try {
-    const res = await fetch(`http://localhost:8080/api/email/list-unread-today?email=${email}&appPassword=${pass}`);
-    const emails = await res.json();
+pauseBtn.onclick = () => speechSynthesis.pause();
+resumeBtn.onclick = () => speechSynthesis.resume();
+stopBtn.onclick = stopSpeech;
 
-    if (emails.length === 0) {
-      subjectList.innerHTML = "<li>No unread emails today 🎉</li>";
-      return;
-    }
-
-    emails.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item.subject;
-
-      li.onclick = async () => {
-        const r = await fetch(`http://localhost:8080/api/email/read?email=${email}&appPassword=${pass}&subject=${encodeURIComponent(item.subject)}`);
-        const text = await r.text();
-        emailBody.innerHTML = `<h4>${item.subject}</h4><p>${text}</p>`;
-        speak(text);
-      };
-
-      subjectList.appendChild(li);
-      speak(item.subject);
-    });
-  } catch (err) {
-    subjectList.innerHTML = "<li>❌ Failed to fetch. Check server or credentials.</li>";
-  }
+function stopSpeech() {
+  speechSynthesis.cancel();
 }
 
-function speak(text) {
-  const utter = new SpeechSynthesisUtterance(text);
-  speechSynthesis.speak(utter);
+async function fetchSubjects(email, encryptedPass) {
+  subjectsUl.innerHTML = "";
+  const res = await fetch(`http://localhost:8080/api/email/list-unread-today?email=${email}&appPassword=${encryptedPass}`);
+  const data = await res.json();
+
+  data.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item.subject;
+    li.onclick = () => readEmail(item.subject, email, encryptedPass);
+    subjectsUl.appendChild(li);
+  });
+}
+
+async function readEmail(subject, email, encryptedPass) {
+  const res = await fetch(`http://localhost:8080/api/email/read?email=${email}&appPassword=${encryptedPass}&subject=${encodeURIComponent(subject)}`);
+  const body = await res.text();
+
+  emailSubject.textContent = subject;
+  emailBody.textContent = body;
+
+  emailList.classList.add("hidden");
+  emailView.classList.remove("hidden");
 }
