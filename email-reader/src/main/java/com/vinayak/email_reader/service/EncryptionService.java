@@ -12,13 +12,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class EncryptionService {
 
-    private final String secretKey = System.getenv("ENCRYPTION_SECRET_KEY");
-    private final String initVector = System.getenv("ENCRYPTION_INIT_VECTOR");
+    // private final String secretKey = System.getenv("ENCRYPTION_SECRET_KEY");
+    // private final String initVector = System.getenv("ENCRYPTION_INIT_VECTOR");
 
+    private final String secretKey;
+    private final String initVector;
+     public EncryptionService(
+        @Value("${encryption.secret-key}") String secretKey,
+        @Value("${encryption.init-vector}") String initVector
+    ) {
+        this.secretKey = secretKey;
+        this.initVector = initVector;
+    }
     public String encrypt(String value) throws Exception {
+        System.out.println("Secret Key: " + secretKey);
+        System.out.println("Init Vector: " + initVector);
+
         IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
         SecretKeySpec skeySpec = new SecretKeySpec(secretKey.getBytes("UTF-8"), "AES");
-
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
 

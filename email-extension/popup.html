@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Email Reader</title>
+  <title>Email Reader - V</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -13,13 +13,16 @@
       <input type="email" id="email" placeholder="Email" />
       <input type="password" id="password" placeholder="App Password" />
       <button id="loginBtn">Login</button>
+      <div id="messageBox" class="error-box"></div>
     </div>
 
     <div id="emailList" class="hidden">
       <h2>📩 Today's Unread Emails</h2>
       <ul id="subjects"></ul>
       <div class="controls">
+        <button id="fetchBtn">📥 Fetch Emails</button>
         <button id="logoutBtn">🔓 Logout</button>
+        <div id="messageBoxList" class="error-box"></div>
       </div>
     </div>
 
@@ -35,6 +38,7 @@
       </div>
     </div>
   </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
