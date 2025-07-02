@@ -1,9 +1,19 @@
 {
   "manifest_version": 3,
-  "name": "Email Reader Assistant",
-  "description": "Read Gmail unread messages by voice and text.",
+  "name": "Email Reader - V",
+  "description": "Read today's unread Gmail messages with voice support.",
   "version": "1.0",
-  "permissions": ["storage"],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:8080/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -12,5 +22,7 @@
       "128": "icon.png"
     }
   },
-  "host_permissions": ["http://localhost:8080/*"]
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
 }
